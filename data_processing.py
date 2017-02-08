@@ -21,10 +21,41 @@ def process_time_entry(start, end):
 
     return time_list
 
-def check_driver_schedule(time, check):
+def check_driver_schedule(current_time,check_start,check_end):
 
     """ This will check the current time against a particular driver and return
-    a True/False return. """
+    a string response. """
+
+    if current_time < check_start:
+
+        return "before start"
+
+    elif current_time > check_end:
+
+        return "after end"
+
+    else:
+
+        return "working"
+
+def is_driver_clocked_in(id_number):
+
+    query = Drivers.query.filter_by(id = id_number).all()
+
+    start = 0
+    end = 0
+
+    for x in query:
+
+        start = x.start_time
+        end = x.end_time
 
 
-    pass
+    now = datetime.now()
+    now = now.time()
+
+    #print(now)
+
+    working = check_driver_schedule(now, start, end)
+
+    return working

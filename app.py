@@ -36,7 +36,15 @@ def home_page():
 
         return redirect(url_for('home_page'))
 
-        
+
+
+    check_time = is_driver_clocked_in(3)
+
+    print(check_time)
+
+
+        #check = check_driver_schedule(now, start, end)
+
 
 
     return render_template('home_page.html')
