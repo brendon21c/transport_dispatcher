@@ -8,26 +8,32 @@
 
   <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
 
-  <form action="{{ request.path }}" method="post">
-    First name:<br>
-    <input type="text" name="first" placeholder="first name" /></br>
-    Last name:<br>
-    <input type="text" name="last" placeholder="last name" /></br>
-    Address:<br>
-    <input type="text" name="address" placeholder="address" /></br>
-    City:<br>
-    <input type="text" name="city" placeholder="city" /></br>
-    Zipcode:<br>
-    <input type="text" name="zipcode" placeholder="zipcode" /></br>
-    Truck Number:<br>
-    <input type="number" name="truck" placeholder="truck number" /></br>
-    Start Time:<br>
-    <input type="time" name="start_time" /></br>
-    End Time:<br>
-    <input type="time" name="end_time" /></br>
-    <p>
-    <input type="submit" name = "button" value="Add" /></br>
-  </form>
+
+  <div>
+
+    <ul class="w3-navbar w3-light-grey w3-border">
+
+      <li><a href = "/">Home</a></li>
+      <li><a href = "{{ url_for('new_driver') }}">New Driver</a></li>
+
+
+
+
+    </ul>
+
+    {% for driver in drivers %}
+
+    <pre>
+
+      {{ driver.id }}
+      {{ driver.first_name }}
+      {{ driver.last_name }}
+
+    </pre>
+
+    {% endfor %}
+
+  </div>
 
 
 </head>
