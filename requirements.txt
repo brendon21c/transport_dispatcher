@@ -1,0 +1,13 @@
+click==6.7
+Flask==0.12
+Flask-SQLAlchemy==2.1
+geopy==1.11.0
+haversine==0.4.5
+itsdangerous==0.24
+Jinja2==2.9.4
+MarkupSafe==0.23
+PyGithub==1.29
+requests==2.12.4
+SQLAlchemy==1.1.4
+Werkzeug==0.11.15
+zipcode==2.0.0
