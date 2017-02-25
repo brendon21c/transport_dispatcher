@@ -35,18 +35,19 @@ class Drivers(db.Model):
 class MN_Zipcodes(db.Model):
 
     """table for managing zip codes and zones for the state of minnesota, overlap with
-    zipcodes and zones might happen."""
+    zipcodes and zones might happen. The anchor column is to identify zipcodes that act as
+    "anchors" around the city to help with routing zip codes not listed in the database."""
 
 
     __tablename__ = 'minnesota_zones'
 
     id = db.Column('id_column', db.Integer, primary_key = True)
-    zip_code = db.Column(db.Integer)
+    zip_code = db.Column(db.String(50))
     delivery_zone = db.Column(db.Integer)
+    anchor_zip = db.Column(db.Boolean)
 
-
-
-    def __init__(self, zip_code, zone):
+    def __init__(self, zip_code, zone, anchor):
 
         self.zip_code = zip_code
         self.delivery_zone = zone
+        self.anchor_zip = anchor

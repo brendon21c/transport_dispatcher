@@ -1,51 +1,26 @@
-import zipcode
 from datetime import *
 from models import *
 from app import db
 from sqlalchemy import *
 
 
-def create_driver_zone(driver_zip):
-
-    """ This will create a new zone for a driver. """
-    # gets last entry in the database so that zones can be kept in order.
-    last_zone_entry = db.session.query(func.max(MN_Zipcodes.delivery_zone)).first()
-    zone_num = last_zone_entry[0]
-
-    #last_zone_entry = db.session.query(func.max(MN_Zipcodes.delivery_zone).filter)
-
-    print(last_zone_entry)
-
-    if last_zone_entry[0] == None:
-
-        zone = 1
-        print(zone)
-
-        return zone
-
-    else:
-
-        zone = last_zone_entry.delivery_zone
-
-        zone_final = zone + 1
-        print(zone_final)
-
-        return zone_final
 
 def create_driver_zipcode_zone(start_zip):
 
+    import zipcode # need to import here or you get a thredding error.
 
     zip_loc = zipcode.isequal(start_zip)
 
     zip_lat_lon = (zip_loc.lat, zip_loc.lon)
 
     zip_radius = zipcode.isinradius(zip_lat_lon, 15)
+    print(zip_radius)
 
     zip_list_final = []
 
     for z in zip_radius:
 
-        zip_list_final.append[z[0]]
+        zip_list_final.append(z.zip)
 
     print(zip_list_final)
 
@@ -69,40 +44,14 @@ def process_time_entry(start, end):
 
     return time_list
 
-# This method may not be needed.
-# def check_driver_schedule(current_time,check_start,check_end):
-#
-#     """ This will check the current time against a particular driver and return
-#     a string response. """
-#
-#     if current_time < check_start:
-#
-#         return "before start"
-#
-#     elif current_time > check_end:
-#
-#         return "after end"
-#
-#     else:
-#
-#         return "working"
-
 
 def current_driver_list():
 
-    # query = Drivers.query.filter_by(id = id_number).all()
-    #
-    # start = 0
-    # end = 0
-    #
-    # for x in query:
-    #
-    #     start = x.start_time
-    #     end = x.end_time
 
+    now = datetime.now().time()
+    hour = now.hour # returns just the hour
+    date = datetime.now().date # returns the date
 
-    now = datetime.now()
-    now = now.time()
 
     query_all = Drivers.query.filter(Drivers.start_time <= now).filter(Drivers.end_time >= now)
 
@@ -114,3 +63,49 @@ def current_driver_list():
     #working = check_driver_schedule(now, start, end)
 
     return query_all
+
+
+def assign_route_to_driver(del_zip):
+
+    timeTest = datetime.strptime("06:00", '%H:%M').time() # variable time for testing purposes.
+
+    driver_query = Drivers.query.filter(Drivers.start_time <= timeTest).filter(Drivers.end_time >= timeTest)
+
+    dest_query = MN_Zipcodes.query.filter(MN_Zipcodes.zip_code == del_zip)
+
+    driver_id_assign = get_driver_for_route(driver_query, dest_query)
+
+    return driver_id_assign
+    
+
+# This takes a list of current drivers and finds returns the appropiate
+# driver
+def get_driver_for_route(drivers, dest):
+
+    possible_zones = [] # in case there are more than one zone for the zip code
+
+    possible_drivers = []
+
+    zone = "" # zone to assign to
+
+    for x in dest:
+
+        possible_zones.append(x.delivery_zone)
+
+    if len(possible_zones) == 1:
+
+        zone = possible_zones[0]
+
+    driver = 0 # driver id to assign to
+
+    driver_query = drivers.filter(Drivers.delivery_zone == zone)
+
+    for x in driver_query:
+
+        possible_drivers.append(x.id)
+
+    if len(possible_drivers) == 1:
+
+        driver = possible_drivers[0]
+
+    return driver

@@ -16,19 +16,21 @@
       <li><a href = "/">Home</a></li>
       <li><a href = "{{ url_for('new_driver') }}">New Driver</a></li>
 
-
-
-
     </ul>
+
+  </div>
+
+  <div>
+
+    <p> List of Drivers currently on duty </p>
 
     {% for driver in drivers %}
 
     <pre>
-
-      {{ driver.id }}
-      {{ driver.first_name }}
-      {{ driver.last_name }}
-
+      Driver Id: {{ driver.id }}
+      First Name: {{ driver.first_name }}
+      Last Name: {{ driver.last_name }}
+      Zone: {{ driver.delivery_zone }}
     </pre>
 
     {% endfor %}

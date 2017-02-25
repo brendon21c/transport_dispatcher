@@ -26,6 +26,23 @@
     End Time:<br>
     <input type="time" name="end_time" /></br>
     <p>
+
+      Zone 1 : North Metro <br>
+      Zone 2 : West Metro <br>
+      Zone 3 : South Metro <br>
+      Zone 4 : East Metro <br>
+      Zone 5 : Central Metro <br>
+
+    </p>
+      Driver's Zone:<br>
+      <select name="zone">
+
+        {% for zone in zones %}
+
+        <option value="{{ zone.delivery_zone }}">{{ zone.delivery_zone }}</option></br>
+
+        {% endfor %}
+    <p>
     <input type="submit" name = "button" value="Add" /></br>
   </form>
 
