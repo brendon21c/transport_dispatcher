@@ -53,20 +53,14 @@ def assign_route_to_driver(del_zip):
 
     dest_query = MN_Zipcodes.query.filter(MN_Zipcodes.zip_code == del_zip)
 
-    if dest_query:
+    driver_id_return = get_drivers_for_route(driver_query, dest_query)
 
-        driver_id_assign = get_drivers_for_route(driver_query, dest_query)
-        #print(driver_id_assign)
-
-    else:
-
-        print("not in database")
+    print(driver_id_return)
 
 
 def possible_zones(dest):
 
     possible_zones = []
-
 
     for x in dest:
 
@@ -93,34 +87,23 @@ def get_drivers_for_route(drivers, dest):
     print(possible_zones)
 
 
-    for x in drivers:
-        for y in possible_zones:
+    for driver in drivers:
+        for zone in possible_zones:
 
-            candidate = drivers.filter_by(delivery_zone = y)
-            print(candidate)
+            if driver.delivery_zone == zone:
 
-            candidate_zone = candidate.delivery_zone
-            print(candidate_zone)
+                possible_drivers.append(driver.id)
 
 
 
     print(possible_drivers)
 
+    if len(possible_drivers) == 1:
 
-    # if len(possible_zones) == 1:
-    #
-    #     zone = possible_zones[0]
-    #
-    # driver = 0 # driver id to assign to
-    #
-    # driver_query = drivers.filter(Drivers.delivery_zone == zone)
-    #
-    # for x in driver_query:
-    #
-    #     possible_drivers.append(x.id)
-    #
-    # if len(possible_drivers) == 1:
-    #
-    #     driver = possible_drivers[0]
-    #
+        return possible_drivers[0]
+
+
+
+
+
     # return driver

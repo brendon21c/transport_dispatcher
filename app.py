@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func, exists, and_
 import itertools
 from datetime import *
+import logging as log
 
 
 app = Flask(__name__)
@@ -12,8 +13,6 @@ app.config['SECRET_KEY'] = "transportation"
 db = SQLAlchemy(app)
 from data_processing import *
 from models import * # Needs to be after db, otherwise no tables are created.
-
-zipcode_check = "new" # This is how the program checks to see if a new "zone" need to be creted/
 
 @app.route('/', methods = ['GET', 'POST'])
 def home_page():
@@ -70,6 +69,26 @@ def new_driver():
 
 @app.route('/new_order', methods = ['GET', 'POST'])
 def new_order():
+
+    if request.method == 'POST':
+
+        date = datetime.now().date() # returns the date
+        default_time = datetime.strptime("06:00", '%H:%M').time() # Needed to enter into database, will be updated by program.
+
+        #assign_method = request.form['assign_method']
+
+
+        orderPickup = Order_Table_Pickup(date,request.form['FromName'],request.form['FromAddress'],
+        request.form['FromCity'], request.form['FromZip'],default_time, default_time, request.form['driver_assign'])
+
+        orderDel = Order_Table_Del(date,request.form['ToName'],request.form['ToAddress'],
+        request.form['ToCity'],request.form['ToZip'],default_time, default_time, request.form['driver_assign'])
+
+        db.session.add(orderPickup)
+        db.session.add(orderDel)
+        db.session.commit()
+
+        return redirect(url_for('home_page'))
 
 
     return render_template('new_order.html', driver_records = Drivers.query.all())

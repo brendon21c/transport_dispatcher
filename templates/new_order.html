@@ -12,7 +12,7 @@
 
 <body>
 
-<div class="container">
+<div class="w3-container">
 
   <h1> New Order Entry Form</h1>
 
@@ -34,6 +34,8 @@
       <input type="text" name="FromAddress" placeholder="Address" /></br>
       <label for = "FromCity">City</label>
       <input type="text" name="FromCity" placeholder="City" /></br>
+      <label for = "FromZip">ZipCode</label>
+      <input type="text" name="FromZip" placeholder="Zipcode" /></br>
       <br>
       <label for = "ToName">Going</label>
       <input type="text" name="ToName" placeholder="Going to" /></br>
@@ -41,15 +43,17 @@
       <input type="text" name="ToAddress" placeholder="Address" /></br>
       <label for = "ToCity">City</label>
       <input type="text" name="ToCity" placeholder="City" /></br>
+      <label for = "ToZip">ZipCode</label>
+      <input type="text" name="ToZip" placeholder="Zipcode" /></br>
       <p>
       Automate or Manual assign route:<br>
       <select name="assign_method">
 
         <option value="auto" selected>auto</option>
         <option value="manual" selected>manual</option>
+
       </select>
       <p>
-      <br>
       List of driver IDs:<br>
       <select name="driver_assign">
         {% for driverID in driver_records %}
@@ -59,7 +63,9 @@
         {% endfor %}
       </select>
       <input type="submit" value="Submit" />
+      
     </form>
+
   </div>
 
 </div>

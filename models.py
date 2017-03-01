@@ -63,17 +63,19 @@ class Order_Table_Pickup(db.Model):
     name = db.Column(db.String(100))
     address = db.Column(db.String(200))
     city = db.Column(db.String(50))
+    zip_code = db.Column(db.String(50))
     pick_time = db.Column(db.Time)
     del_time = db.Column(db.Time)
     driverID = db.Column(db.Integer, ForeignKey('drivers_table.DriverID'))
 
 
-    def __init__(self, date, FromName, FromAddress, FromCity, pickup, delivered, driverAssign):
+    def __init__(self, date, FromName, FromAddress, FromCity, FromZip, pickup, delivered, driverAssign):
 
         self.date = date
         self.name = FromName
         self.address = FromAddress
         self.city = FromCity
+        self.zip_code = FromZip
         self.pick_time = pickup
         self.del_time = delivered
         self.driverID = driverAssign
@@ -87,16 +89,18 @@ class Order_Table_Del(db.Model):
     name = db.Column(db.String(100))
     address = db.Column(db.String(200))
     city = db.Column(db.String(50))
+    zip_code = db.Column(db.String(50))
     pick_time = db.Column(db.Time)
     del_time = db.Column(db.Time)
     driverID = db.Column(db.Integer, ForeignKey('drivers_table.DriverID'))
 
-    def __init__(self, date, ToName, ToAddress, ToCity, pickup, delivered, driverAssign):
+    def __init__(self, date, ToName, ToAddress, ToCity, ToZip, pickup, delivered, driverAssign):
 
         self.date = date
         self.name = ToName
         self.address = ToAddress
         self.city = ToCity
+        self.zip_code = ToZip
         self.pick_time = pickup
         self.del_time = delivered
         self.driverID = driverAssign
