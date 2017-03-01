@@ -33,7 +33,7 @@ def home_page():
 
     get_drivers = current_driver_list()
 
-    assign_route_to_driver('55337')
+    assign_route_to_driver('55344')
 
 
     return render_template('home_page.html', drivers = get_drivers)
@@ -61,22 +61,20 @@ def new_driver():
         db.session.commit()
 
 
-        # if zipcode_check == "new":
-        #
-        #     query = Drivers.query.order_by(Drivers.id.desc()).first()
-        #     zone_zip = query.starting_zipcode
-        #     zone_num = query.delivery_zone
-        #     print(zone_zip)
-        #     zip_list = create_driver_zipcode_zone(zone_zip)
-        #     add_zone_to_DB(zip_list, zone_num)
-
-
-
 
         return redirect(url_for('home_page'))
 
 
     return render_template('new_driver.html', zones = MN_Zipcodes.query.filter_by(anchor_zip = True).all())
+
+
+@app.route('/new_order', methods = ['GET', 'POST'])
+def new_order():
+
+
+    return render_template('new_order.html', driver_records = Drivers.query.all())
+
+
 
 # Had to add zones manually due to Zipcode API problems.
 def add_zone_to_DB(zip_list, zone):

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1> New Order Entry Form</h1>
+
+
+  <ul class="w3-navbar w3-light-grey w3-border">
+
+    <li class="active"><a href = "/">Home</a></li>
+    <li><a href = "{{ url_for('new_driver') }}"> Add driver</a></li>
+    <li><a href = "{{ url_for('new_order') }}"> Add New Route</a></li>
+
+  </ul>
+  <p>
+  <div>
+
+    <form action="{{ request.path }}" method="post">
+      <label for ="FromName">From</label>
+      <input type="text" name="FromName" placeholder="From" /></br>
+      <label for = "FromAddress">Address</label>
+      <input type="text" name="FromAddress" placeholder="Address" /></br>
+      <label for = "FromCity">City</label>
+      <input type="text" name="FromCity" placeholder="City" /></br>
+      <br>
+      <label for = "ToName">Going</label>
+      <input type="text" name="ToName" placeholder="Going to" /></br>
+      <label for = "ToAddress">Address</label>
+      <input type="text" name="ToAddress" placeholder="Address" /></br>
+      <label for = "ToCity">City</label>
+      <input type="text" name="ToCity" placeholder="City" /></br>
+      <p>
+      Automate or Manual assign route:<br>
+      <select name="assign_method">
+
+        <option value="auto" selected>auto</option>
+        <option value="manual" selected>manual</option>
+      </select>
+      <p>
+      <br>
+      List of driver IDs:<br>
+      <select name="driver_assign">
+        {% for driverID in driver_records %}
+
+        <option value="{{ driverID.id }}" selected>{{ driverID.id }}</option>
+
+        {% endfor %}
+      </select>
+      <input type="submit" value="Submit" />
+    </form>
+  </div>
+
+</div>
+</body>
+<html>

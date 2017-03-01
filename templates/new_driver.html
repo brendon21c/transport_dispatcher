@@ -2,11 +2,28 @@
 <html lang="en">
 <head>
 
-  <title> Dispatcher Web Application </title>
+<title> Dispatcher Web Application </title>
 
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
 
   <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+
+</meta>
+
+<body>
+
+  <div>
+
+    <ul class="w3-navbar w3-light-grey w3-border">
+
+      <li><a href = "/">Home</a></li>
+      <li><a href = "{{ url_for('new_driver') }}">New Driver</a></li>
+      <li><a href = "{{ url_for('new_order') }}">New Order</a></li>
+
+    </ul>
+  </div>
+
+  <p>
 
   <form action="{{ request.path }}" method="post">
     First name:<br>
@@ -50,6 +67,6 @@
 
 </head>
 
-<body>
+</body>
 
 </html>

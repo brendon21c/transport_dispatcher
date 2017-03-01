@@ -9,7 +9,7 @@ class Drivers(db.Model):
 
     __tablename__ = 'drivers_table'
 
-    id = db.Column('driver_id', db.Integer, primary_key = True)
+    id = db.Column('DriverID', db.Integer, primary_key = True)
     first_name = db.Column(db.String(50))
     last_name = db.Column(db.String(50))
     starting_address = db.Column(db.String(50))
@@ -19,6 +19,8 @@ class Drivers(db.Model):
     delivery_zone = db.Column(db.Integer)
     start_time = db.Column(db.Time)
     end_time = db.Column(db.Time)
+    orderPickup = relationship("Order_Table_Pickup")
+    orderDel = relationship("Order_Table_Del")
 
     def __init__(self,first,last, address, city, zipcode, truck, zone, start, end):
 
@@ -51,3 +53,50 @@ class MN_Zipcodes(db.Model):
         self.zip_code = zip_code
         self.delivery_zone = zone
         self.anchor_zip = anchor
+
+# Table setup for order Pickups
+class Order_Table_Pickup(db.Model):
+
+    __tablename__ = 'orderPickup'
+    id = db.Column('OrderNum', db.Integer, primary_key = True)
+    date = db.Column(db.Date)
+    name = db.Column(db.String(100))
+    address = db.Column(db.String(200))
+    city = db.Column(db.String(50))
+    pick_time = db.Column(db.Time)
+    del_time = db.Column(db.Time)
+    driverID = db.Column(db.Integer, ForeignKey('drivers_table.DriverID'))
+
+
+    def __init__(self, date, FromName, FromAddress, FromCity, pickup, delivered, driverAssign):
+
+        self.date = date
+        self.name = FromName
+        self.address = FromAddress
+        self.city = FromCity
+        self.pick_time = pickup
+        self.del_time = delivered
+        self.driverID = driverAssign
+
+# Table setup for order Deliveries
+class Order_Table_Del(db.Model):
+
+    __tablename__ = 'orderDel'
+    id = db.Column('OrderNum', db.Integer, primary_key = True)
+    date = db.Column(db.Date)
+    name = db.Column(db.String(100))
+    address = db.Column(db.String(200))
+    city = db.Column(db.String(50))
+    pick_time = db.Column(db.Time)
+    del_time = db.Column(db.Time)
+    driverID = db.Column(db.Integer, ForeignKey('drivers_table.DriverID'))
+
+    def __init__(self, date, ToName, ToAddress, ToCity, pickup, delivered, driverAssign):
+
+        self.date = date
+        self.name = ToName
+        self.address = ToAddress
+        self.city = ToCity
+        self.pick_time = pickup
+        self.del_time = delivered
+        self.driverID = driverAssign
