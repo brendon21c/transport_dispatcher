@@ -22,42 +22,100 @@ def process_time_entry(start, end):
 
     return time_list
 
+# Sets up the Workload table for each day to track driver stops.
+def create_new_stop_day():
+
+    today = datetime.now().date() # returns the date
+    #print(today)
+
+    query = Workload.query.filter_by(date = today).first()
+    #print(query)
+
+    if not query:
+
+        all_drivers = Drivers.query.all()
+
+        for driver in all_drivers:
+
+            person = driver.id
+
+            new_day = Workload(today, person, 0)
+
+            db.session.add(new_day)
+            db.session.commit()
 
 def current_driver_list():
 
 
-    now = datetime.now().time()
+    now = datetime.now().time() # current time.
     hour = now.hour # returns just the hour
     date = datetime.now().date() # returns the date
 
-    print(type(date))
-    print(date)
+    # print(type(date))
+    # print(date)
 
     query_all = Drivers.query.filter(Drivers.start_time <= now).filter(Drivers.end_time >= now)
-
-    # for x in query_all:
-    #     print(x.id)
-
-    #print(now)
-
-    #working = check_driver_schedule(now, start, end)
 
     return query_all
 
 
-def assign_route_to_driver(del_zip):
+def assign_route_to_driver(del_zip, current_time):
 
-    timeTest = datetime.strptime("06:00", '%H:%M').time() # variable time for testing purposes.
 
-    driver_query = Drivers.query.filter(Drivers.start_time <= timeTest).filter(Drivers.end_time >= timeTest)
+    driver_query = Drivers.query.filter(Drivers.start_time <= current_time).filter(Drivers.end_time >= current_time)
 
     dest_query = MN_Zipcodes.query.filter(MN_Zipcodes.zip_code == del_zip)
 
-    driver_id_return = get_drivers_for_route(driver_query, dest_query)
+    dest_zones = possible_zones(dest_query) # get zones
 
-    print(driver_id_return)
+    drivers_list = possible_drivers(driver_query, dest_zones) # get drivers
+
+    if drivers_list:
+
+        if len(drivers_list) == 1: # only one driver.
+
+            driver_id = drivers_list[0]
+            update_driver_workload(driver_id)
+
+            return driver_id
+
+        else:
+
+            driver_id = compare_driver_workload(drivers_list) # multiple drivers.
+            update_driver_workload(driver_id)
+
+            return driver_id
 
 
+# Updates the driver workload table to keep track of stops.
+def update_driver_workload(driver):
+
+    today = datetime.now().date() # returns the date
+
+    stop_numbers = Workload.query.filter_by(date = today).filter_by(driverID = driver).first()
+
+    stop_numbers.del_num = stop_numbers.del_num + 2 # Adding 2 to the number because each order has 2 stops (pickup & delivery)
+
+    db.session.commit()
+
+
+# gets a list of available drivers.
+def possible_drivers(drivers, zones):
+
+    possible_drivers = []
+
+    for driver in drivers:
+        for zone in zones:
+
+            if driver.delivery_zone == zone:
+
+                possible_drivers.append(driver.id)
+
+    print(possible_drivers)
+
+    return(possible_drivers)
+
+# gets a list of zones for the delivery.
 def possible_zones(dest):
 
     possible_zones = []
@@ -66,44 +124,42 @@ def possible_zones(dest):
 
         possible_zones.append(x.delivery_zone)
 
+
     return possible_zones
 
 
-# This takes a list of current drivers and finds returns the appropiate
-# driver
-def get_drivers_for_route(drivers, dest):
+# Work in progress, may be modified with query.
+def compare_driver_workload(drivers_list):
 
-    possible_zones = [] # in case there are more than one zone for the zip code
+    today = datetime.now().date() # returns the date
 
-    possible_drivers = []
+    workload_number = []
 
-    zone = "" # zone to assign to
+    for driver in drivers_list:
 
-    # Adds all possible zone to the list.
-    for x in dest:
+        stop_numbers = Workload.query.filter_by(date = today).filter_by(driverID = driver).first()
 
-        possible_zones.append(x.delivery_zone)
+        number = stop_numbers.del_num
 
-    print(possible_zones)
+        #print(number)
 
-
-    for driver in drivers:
-        for zone in possible_zones:
-
-            if driver.delivery_zone == zone:
-
-                possible_drivers.append(driver.id)
+        workload_number.append(number)
 
 
+    low = workload_number[0]
+    #print(low)
+    driver_id = 0
 
-    print(possible_drivers)
+    for stops in workload_number: # finds the driver with the least amount of stops.
 
-    if len(possible_drivers) == 1:
+        if stops <= low:
 
-        return possible_drivers[0]
+            low = stops
 
+            index = workload_number.index(stops) # position in list
 
+            driver_id = drivers_list[index]
 
+    print(driver_id)
 
-
-    # return driver
+    return driver_id

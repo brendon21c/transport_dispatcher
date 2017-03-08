@@ -104,3 +104,17 @@ class Order_Table_Del(db.Model):
         self.pick_time = pickup
         self.del_time = delivered
         self.driverID = driverAssign
+
+class Workload(db.Model):
+    """This table is to keep a running tally of the number of jobs each driver does on a day."""
+
+    id = db.Column('PK_column', db.Integer, primary_key = True)
+    date = db.Column(db.Date)
+    driverID = db.Column(db.Integer, ForeignKey('drivers_table.DriverID'))
+    del_num = db.Column(db.Integer)
+
+
+    def __init__(self, date, ID, stops):
+        self.date = date
+        self.driverID = ID
+        self.del_num = stops

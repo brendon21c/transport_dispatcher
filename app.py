@@ -29,10 +29,12 @@ def home_page():
     #
     # add_zone_to_DB(zip_code_list_5, 5)
 
+    create_new_stop_day() # only runs once a day.
 
     get_drivers = current_driver_list()
 
-    assign_route_to_driver('55344')
+    timeTest = datetime.strptime("09:00", '%H:%M').time() # variable time for testing purposes.
+    assign_route_to_driver('55344', timeTest)
 
 
     return render_template('home_page.html', drivers = get_drivers)
@@ -77,18 +79,38 @@ def new_order():
 
         #assign_method = request.form['assign_method']
 
+        if request.form['assign_method'] == 'auto':
 
-        orderPickup = Order_Table_Pickup(date,request.form['FromName'],request.form['FromAddress'],
-        request.form['FromCity'], request.form['FromZip'],default_time, default_time, request.form['driver_assign'])
 
-        orderDel = Order_Table_Del(date,request.form['ToName'],request.form['ToAddress'],
-        request.form['ToCity'],request.form['ToZip'],default_time, default_time, request.form['driver_assign'])
+            timeTest = datetime.strptime("09:00", '%H:%M').time() # variable time for testing purposes.
 
-        db.session.add(orderPickup)
-        db.session.add(orderDel)
-        db.session.commit()
+            driver_id = assign_route_to_driver(request.form['ToZip'], timeTest)
 
-        return redirect(url_for('home_page'))
+            orderPickup = Order_Table_Pickup(date,request.form['FromName'],request.form['FromAddress'],
+            request.form['FromCity'], request.form['FromZip'],default_time, default_time, driver_id)
+
+            orderDel = Order_Table_Del(date,request.form['ToName'],request.form['ToAddress'],
+            request.form['ToCity'],request.form['ToZip'],default_time, default_time, driver_id)
+
+            db.session.add(orderPickup)
+            db.session.add(orderDel)
+            db.session.commit()
+
+            return redirect(url_for('home_page'))
+
+        else:
+
+            orderPickup = Order_Table_Pickup(date,request.form['FromName'],request.form['FromAddress'],
+            request.form['FromCity'], request.form['FromZip'],default_time, default_time, request.form['driver_assign'])
+
+            orderDel = Order_Table_Del(date,request.form['ToName'],request.form['ToAddress'],
+            request.form['ToCity'],request.form['ToZip'],default_time, default_time, request.form['driver_assign'])
+
+            db.session.add(orderPickup)
+            db.session.add(orderDel)
+            db.session.commit()
+
+            return redirect(url_for('home_page'))
 
 
     return render_template('new_order.html', driver_records = Drivers.query.all())
@@ -114,6 +136,7 @@ def add_zone_to_DB(zip_list, zone):
 
         db.session.add(zip_entry)
         db.session.commit()
+
 
 
 if __name__ == '__main__':
