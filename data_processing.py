@@ -3,6 +3,9 @@ from models import *
 from app import db
 from sqlalchemy import *
 import logging as log
+import requests
+import json
+from keys import keys
 
 
 # takes a 12hr time and turns it into a 24 for data entry.
@@ -56,6 +59,7 @@ def current_driver_list():
 
     query_all = Drivers.query.filter(Drivers.start_time <= now).filter(Drivers.end_time >= now)
 
+
     return query_all
 
 
@@ -68,13 +72,21 @@ def assign_route_to_driver(del_zip, current_time):
 
     dest_zones = possible_zones(dest_query) # get zones
 
+    if not dest_zones:
+
+        dest_zones = find_anchor_zone(del_zip) # del zipcode is not in the database.
+
     drivers_list = possible_drivers(driver_query, dest_zones) # get drivers
+
+    print(dest_zones)
+    print(drivers_list)
 
     if drivers_list:
 
         if len(drivers_list) == 1: # only one driver.
 
             driver_id = drivers_list[0]
+            print(driver_id)
             update_driver_workload(driver_id)
 
             return driver_id
@@ -111,8 +123,6 @@ def possible_drivers(drivers, zones):
 
                 possible_drivers.append(driver.id)
 
-    print(possible_drivers)
-
     return(possible_drivers)
 
 # gets a list of zones for the delivery.
@@ -126,6 +136,43 @@ def possible_zones(dest):
 
 
     return possible_zones
+
+
+# Finds the nearest zone if the delivery zip code isn't in the database.
+def find_anchor_zone(dest):
+
+    key = keys['GOOGLE_KEY']
+
+    query = MN_Zipcodes.query.filter(MN_Zipcodes.anchor_zip == True)
+
+    zone_list = [] # Needs to be a list to work with other functions later.
+
+    zone = 0
+    low = 500 # default number to start the comparison, this would be 500mi.
+
+    for x in query:
+
+        url = 'https://maps.googleapis.com/maps/api/directions/json?origin={}&destination={}&key={}'.format(dest,x.zip_code, key)
+
+        request = requests.get(url)
+
+        json_format = request.json()
+
+        distance_string = json_format['routes'][0]['legs'][0]['distance']['text'] # gets the distance in miles.
+        distance_split = distance_string.split(' ')
+        distance_float = float(distance_split[0])
+
+        if distance_float < low:
+
+            zone = x.delivery_zone
+            low = distance_float
+
+    print(zone)
+    print(low)
+
+    zone_list.append(zone)
+
+    return zone_list
 
 
 # Work in progress, may be modified with query.
@@ -150,6 +197,7 @@ def compare_driver_workload(drivers_list):
     #print(low)
     driver_id = 0
 
+    #TODO run a check if a driver has more than 16 stops, they would be exempt.
     for stops in workload_number: # finds the driver with the least amount of stops.
 
         if stops <= low:

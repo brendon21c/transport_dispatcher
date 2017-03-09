@@ -8,39 +8,46 @@
 
   <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
 
-
-  <div>
-
-    <ul class="w3-navbar w3-light-grey w3-border">
-
-      <li><a href = "/">Home</a></li>
-      <li><a href = "{{ url_for('new_driver') }}">New Driver</a></li>
-      <li><a href = "{{ url_for('new_order') }}">New Order</a></li>
-
-    </ul>
-
-  </div>
-
-  <div>
-
-    <p> List of Drivers currently on duty </p>
-
-    {% for driver in drivers %}
-
-    <pre>
-      Driver Id: {{ driver.id }}
-      First Name: {{ driver.first_name }}
-      Last Name: {{ driver.last_name }}
-      Zone: {{ driver.delivery_zone }}
-    </pre>
-
-    {% endfor %}
-
-  </div>
-
-
 </head>
 
 <body>
+
+  <div class="w3-container">
+
+    <h2> Home Page </h2>
+
+    <div>
+
+      <ul class="w3-navbar w3-light-grey w3-border">
+
+        <li><a href = "/">Home</a></li>
+        <li><a href = "{{ url_for('new_driver') }}">New Driver</a></li>
+        <li><a href = "{{ url_for('new_order') }}">New Order</a></li>
+        <li><a href = "{{ url_for('display_orders') }}"> Show Routes for Drivers</a></li>
+
+
+      </ul>
+
+    </div>
+
+    <div>
+
+      <p> List of Drivers currently on duty </p>
+
+      {% for driver in drivers %}
+
+      <pre>
+        Driver Id: {{ driver.id }}
+        First Name: {{ driver.first_name }}
+        Last Name: {{ driver.last_name }}
+        Zone: {{ driver.delivery_zone }}
+      </pre>
+
+      {% endfor %}
+
+    </div>
+
+  </div>
+</body>
 
 </html>

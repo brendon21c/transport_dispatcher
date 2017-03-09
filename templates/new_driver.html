@@ -2,71 +2,76 @@
 <html lang="en">
 <head>
 
-<title> Dispatcher Web Application </title>
+  <title> Dispatcher Web Application </title>
 
-<meta charset="UTF-8">
+  <meta charset="UTF-8">
 
-  <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
 
-</meta>
-
-<body>
-
-  <div>
-
-    <ul class="w3-navbar w3-light-grey w3-border">
-
-      <li><a href = "/">Home</a></li>
-      <li><a href = "{{ url_for('new_driver') }}">New Driver</a></li>
-      <li><a href = "{{ url_for('new_order') }}">New Order</a></li>
-
-    </ul>
-  </div>
-
-  <p>
-
-  <form action="{{ request.path }}" method="post">
-    First name:<br>
-    <input type="text" name="first" placeholder="first name" /></br>
-    Last name:<br>
-    <input type="text" name="last" placeholder="last name" /></br>
-    Address:<br>
-    <input type="text" name="address" placeholder="address" /></br>
-    City:<br>
-    <input type="text" name="city" placeholder="city" /></br>
-    Zipcode:<br>
-    <input type="text" name="zipcode" placeholder="zipcode" /></br>
-    Truck Number:<br>
-    <input type="number" name="truck" placeholder="truck number" /></br>
-    Start Time:<br>
-    <input type="time" name="start_time" /></br>
-    End Time:<br>
-    <input type="time" name="end_time" /></br>
-    <p>
-
-      Zone 1 : North Metro <br>
-      Zone 2 : West Metro <br>
-      Zone 3 : South Metro <br>
-      Zone 4 : East Metro <br>
-      Zone 5 : Central Metro <br>
-
-    </p>
-      Driver's Zone:<br>
-      <select name="zone">
-
-        {% for zone in zones %}
-
-        <option value="{{ zone.delivery_zone }}">{{ zone.delivery_zone }}</option></br>
-
-        {% endfor %}
-    <p>
-    <input type="submit" name = "button" value="Add" /></br>
-  </form>
-
-
+  </meta>
 
 </head>
 
-</body>
+<body>
+  <div class="w3-container">
 
+    <h2> New Order Entry Form</h2>
+
+
+    <div>
+
+      <ul class="w3-navbar w3-light-grey w3-border">
+
+        <li><a href = "/">Home</a></li>
+        <li><a href = "{{ url_for('new_driver') }}">New Driver</a></li>
+        <li><a href = "{{ url_for('new_order') }}">New Order</a></li>
+        <li><a href = "{{ url_for('display_orders') }}"> Show Routes for Drivers</a></li>
+
+
+      </ul>
+    </div>
+
+    <p>
+
+    <form action="{{ request.path }}" method="post">
+      First name:<br>
+      <input type="text" name="first" placeholder="first name" /></br>
+      Last name:<br>
+      <input type="text" name="last" placeholder="last name" /></br>
+      Address:<br>
+      <input type="text" name="address" placeholder="address" /></br>
+      City:<br>
+      <input type="text" name="city" placeholder="city" /></br>
+      Zipcode:<br>
+      <input type="text" name="zipcode" placeholder="zipcode" /></br>
+      Truck Number:<br>
+      <input type="number" name="truck" placeholder="truck number" /></br>
+      Start Time:<br>
+      <input type="time" name="start_time" /></br>
+      End Time:<br>
+      <input type="time" name="end_time" /></br>
+      <p>
+
+        Zone 1 : North Metro <br>
+        Zone 2 : West Metro <br>
+        Zone 3 : South Metro <br>
+        Zone 4 : East Metro <br>
+        Zone 5 : Central Metro <br>
+
+      </p>
+        Driver's Zone:<br>
+        <select name="zone">
+
+          {% for zone in zones %}
+
+          <option value="{{ zone.delivery_zone }}">{{ zone.delivery_zone }}</option></br>
+
+          {% endfor %}
+      <p>
+      <input type="submit" name = "button" value="Add" /></br>
+    </form>
+
+  </div>
+
+</body>
 </html>

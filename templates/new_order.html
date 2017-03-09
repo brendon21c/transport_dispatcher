@@ -14,14 +14,16 @@
 
 <div class="w3-container">
 
-  <h1> New Order Entry Form</h1>
+  <h2> New Order Entry Form</h2>
 
 
   <ul class="w3-navbar w3-light-grey w3-border">
 
     <li class="active"><a href = "/">Home</a></li>
-    <li><a href = "{{ url_for('new_driver') }}"> Add driver</a></li>
-    <li><a href = "{{ url_for('new_order') }}"> Add New Route</a></li>
+    <li><a href = "{{ url_for('new_driver') }}"> New Driver</a></li>
+    <li><a href = "{{ url_for('new_order') }}"> New Order</a></li>
+    <li><a href = "{{ url_for('display_orders') }}"> Show Routes for Drivers</a></li>
+
 
   </ul>
   <p>
@@ -63,7 +65,7 @@
         {% endfor %}
       </select>
       <input type="submit" value="Submit" />
-      
+
     </form>
 
   </div>

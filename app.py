@@ -29,12 +29,14 @@ def home_page():
     #
     # add_zone_to_DB(zip_code_list_5, 5)
 
+
     create_new_stop_day() # only runs once a day.
 
     get_drivers = current_driver_list()
 
+    # This is for testing:
     timeTest = datetime.strptime("09:00", '%H:%M').time() # variable time for testing purposes.
-    assign_route_to_driver('55344', timeTest)
+    #assign_route_to_driver('54022', timeTest)
 
 
     return render_template('home_page.html', drivers = get_drivers)
@@ -115,6 +117,20 @@ def new_order():
 
     return render_template('new_order.html', driver_records = Drivers.query.all())
 
+# Page to view orders by driver and day.
+@app.route('/display_orders', methods = ['GET', 'POST'])
+def display_orders():
+
+    if request.args.get('driver'):
+
+        driverID = request.args.get('driver')
+        order_date = request.args.get('date')
+        
+
+        return render_template('display_orders.html', driver_records = Drivers.query.all(), Workload = Workload.query.filter_by(driverID = 1).all(), Pickup = Order_Table_Pickup.query.filter_by(date = order_date).filter_by(driverID = driverID).all(), Delivery = Order_Table_Del.query.filter_by(date = order_date).filter_by(driverID = driverID).all())
+
+
+    return render_template('display_orders.html', driver_records = Drivers.query.all(), Workload = Workload.query.filter_by(driverID = 1).all())
 
 
 # Had to add zones manually due to Zipcode API problems.
