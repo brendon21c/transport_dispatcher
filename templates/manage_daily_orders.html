@@ -14,7 +14,7 @@
 <div class="w3-container">
 
 
-  <h1> Display All Routes For Driver </h1>
+  <h1> Manage Daily Routes </h1>
 
   <ul class="w3-navbar w3-light-grey w3-border">
 
@@ -31,38 +31,55 @@
 
     <div>
 
-      <p> Choose a driver. (Driver ID, First Name, Delivery Zone)</p>
-      <br>
-      <form>
+      <h4> Total Stops For Day: {{ date }}</h4>
 
-        <select name="date">
-
-          {% for date in dates %}
-
-          <option value="{{ date.date }}" selected>{{ date.date }}</option>
-
-          {% endfor %}
-        </select>
-
-        <select name="driver">
-
-          {% for driverID in driver_records %}
-
-          <option value="{{ driverID.id }}" selected>{{ driverID.id }}, {{ driverID.first_name }}, {{ driverID.delivery_zone}}</option>
-
-          {% endfor %}
-        </select>
-
-          <input type="submit" value="Submit" />
-
-      </form>
     </div>
 
+    <p> This page lets you reassign drivers and delete for the day. </p>
     <div>
 
       {% for driver in total_stops%}
       <h4> Total Stops For Day: {{ driver.del_num }}</h4>
       {% endfor %}
+
+    </div>
+
+    <div class="w3-row">
+
+      <div class="w3-half w3-container">
+        <table class="w3-table-all w3-hoverable">
+          <thead>
+            <tr class="w3-light-blue">
+              <th>Driver ID</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Delivery Zone</th>
+            </tr>
+          </thead>
+
+          {% for driver in driver_records %}
+            <tr>
+              <td>{{ driver.id }}</td>
+              <td>{{ driver.first_name }}</td>
+              <td>{{ driver.last_name }}</td>
+              <td>{{ driver.delivery_zone }}</td>
+            </tr>
+          {% endfor %}
+
+        </table>
+      </div>
+
+      <div class="w3-half w3-container">
+        <p>
+
+          Zone 1 : North Metro <br>
+          Zone 2 : West Metro <br>
+          Zone 3 : South Metro <br>
+          Zone 4 : East Metro <br>
+          Zone 5 : Central Metro <br>
+
+        </p>
+      </div>
 
     </div>
 
@@ -79,6 +96,7 @@
               <th>Address</th>
               <th>City</th>
               <th>Zip Code</th>
+              <th>Driver ID</th>
             </tr>
           </thead>
 
@@ -89,6 +107,7 @@
               <td>{{ order.address }}</td>
               <td>{{ order.city }}</td>
               <td>{{ order.zip_code }}</td>
+              <td>{{ order.driverID }}</td>
 
             </tr>
           {% endfor %}
@@ -105,6 +124,8 @@
               <th>Address</th>
               <th>City</th>
               <th>Zip Code</th>
+              <th>Driver ID</th>
+
             </tr>
           </thead>
 
@@ -115,6 +136,8 @@
               <td>{{ order.address }}</td>
               <td>{{ order.city }}</td>
               <td>{{ order.zip_code }}</td>
+              <td>{{ order.driverID }}</td>
+
             </tr>
           {% endfor %}
 

@@ -35,8 +35,8 @@ def home_page():
     get_drivers = current_driver_list()
 
     # This is for testing:
-    timeTest = datetime.strptime("09:00", '%H:%M').time() # variable time for testing purposes.
-    #assign_route_to_driver('54022', timeTest)
+    #timeTest = datetime.strptime("7:00", '%H:%M').time() # variable time for testing purposes.
+    #assign_route_to_driver('55303', timeTest)
 
 
     return render_template('home_page.html', drivers = get_drivers)
@@ -68,7 +68,7 @@ def new_driver():
         return redirect(url_for('home_page'))
 
 
-    return render_template('new_driver.html', zones = MN_Zipcodes.query.filter_by(anchor_zip = True).all())
+    return render_template('new_driver.html', zones = MN_Zipcodes.query.filter_by(anchor_zip = True).all(), drivers = Drivers.query.all())
 
 
 @app.route('/new_order', methods = ['GET', 'POST'])
@@ -86,7 +86,9 @@ def new_order():
 
             timeTest = datetime.strptime("09:00", '%H:%M').time() # variable time for testing purposes.
 
-            driver_id = assign_route_to_driver(request.form['ToZip'], timeTest)
+            current_time = datetime.now().time() # current time.
+
+            driver_id = assign_route_to_driver(request.form['ToZip'], current_time)
 
             orderPickup = Order_Table_Pickup(date,request.form['FromName'],request.form['FromAddress'],
             request.form['FromCity'], request.form['FromZip'],default_time, default_time, driver_id)
@@ -115,7 +117,7 @@ def new_order():
             return redirect(url_for('home_page'))
 
 
-    return render_template('new_order.html', driver_records = Drivers.query.all())
+    return render_template('new_order.html', driver_records = Drivers.query.all(), drivers = Drivers.query.all())
 
 # Page to view orders by driver and day.
 @app.route('/display_orders', methods = ['GET', 'POST'])
@@ -125,12 +127,22 @@ def display_orders():
 
         driverID = request.args.get('driver')
         order_date = request.args.get('date')
-        
-
-        return render_template('display_orders.html', driver_records = Drivers.query.all(), Workload = Workload.query.filter_by(driverID = 1).all(), Pickup = Order_Table_Pickup.query.filter_by(date = order_date).filter_by(driverID = driverID).all(), Delivery = Order_Table_Del.query.filter_by(date = order_date).filter_by(driverID = driverID).all())
 
 
-    return render_template('display_orders.html', driver_records = Drivers.query.all(), Workload = Workload.query.filter_by(driverID = 1).all())
+        return render_template('display_orders.html', driver_records = Drivers.query.all(), dates = Workload.query.filter_by(driverID = 1).all(), total_stops = Workload.query.filter_by(driverID = driverID).filter_by(date = order_date).all() , Pickup = Order_Table_Pickup.query.filter_by(date = order_date).filter_by(driverID = driverID).all(), Delivery = Order_Table_Del.query.filter_by(date = order_date).filter_by(driverID = driverID).all())
+
+
+    return render_template('display_orders.html', driver_records = Drivers.query.all(), dates = Workload.query.filter_by(driverID = 1).all())
+
+# Page to view orders by driver and day.
+@app.route('/manage_daily_orders', methods = ['GET', 'POST'])
+def manage_daily_orders():
+
+    order_date = datetime.now().date() # returns the date
+
+
+    return render_template('manage_daily_orders.html', driver_records = Drivers.query.all(), date = order_date, Pickup = Order_Table_Pickup.query.filter_by(date = order_date).all(), Delivery = Order_Table_Del.query.filter_by(date = order_date).all())
+
 
 
 # Had to add zones manually due to Zipcode API problems.

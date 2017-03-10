@@ -26,51 +26,85 @@
         <li><a href = "{{ url_for('new_driver') }}">New Driver</a></li>
         <li><a href = "{{ url_for('new_order') }}">New Order</a></li>
         <li><a href = "{{ url_for('display_orders') }}"> Show Routes for Drivers</a></li>
-
+        <li><a href = "{{ url_for('manage_daily_orders') }}"> Manage Daily Routes</a></li>
 
       </ul>
     </div>
 
     <p>
 
-    <form action="{{ request.path }}" method="post">
-      First name:<br>
-      <input type="text" name="first" placeholder="first name" /></br>
-      Last name:<br>
-      <input type="text" name="last" placeholder="last name" /></br>
-      Address:<br>
-      <input type="text" name="address" placeholder="address" /></br>
-      City:<br>
-      <input type="text" name="city" placeholder="city" /></br>
-      Zipcode:<br>
-      <input type="text" name="zipcode" placeholder="zipcode" /></br>
-      Truck Number:<br>
-      <input type="number" name="truck" placeholder="truck number" /></br>
-      Start Time:<br>
-      <input type="time" name="start_time" /></br>
-      End Time:<br>
-      <input type="time" name="end_time" /></br>
-      <p>
+    <div class="w3-row">
 
-        Zone 1 : North Metro <br>
-        Zone 2 : West Metro <br>
-        Zone 3 : South Metro <br>
-        Zone 4 : East Metro <br>
-        Zone 5 : Central Metro <br>
+    <div class="w3-container w3-third" style="height:20%">
 
-      </p>
-        Driver's Zone:<br>
-        <select name="zone">
+        <form action="{{ request.path }}" method="post">
+          First name:<br>
+          <input class="w3-input w3-border" type="text" name="first" placeholder="first name" /></br>
+          Last name:<br>
+          <input class="w3-input w3-border" type="text" name="last" placeholder="last name" /></br>
+          Address:<br>
+          <input class="w3-input w3-border" type="text" name="address" placeholder="address" /></br>
+          City:<br>
+          <input class="w3-input w3-border" type="text" name="city" placeholder="city" /></br>
+          Zipcode:<br>
+          <input class="w3-input w3-border" type="text" name="zipcode" placeholder="zipcode" /></br>
+          Truck Number:<br>
+          <input class="w3-input w3-border" type="number" name="truck" placeholder="truck number" /></br>
+          Start Time:<br>
+          <input class="w3-input w3-border" type="time" name="start_time" /></br>
+          End Time:<br>
+          <input class="w3-input w3-border" type="time" name="end_time" /></br>
+          <p>
 
-          {% for zone in zones %}
+            Zone 1 : North Metro <br>
+            Zone 2 : West Metro <br>
+            Zone 3 : South Metro <br>
+            Zone 4 : East Metro <br>
+            Zone 5 : Central Metro <br>
 
-          <option value="{{ zone.delivery_zone }}">{{ zone.delivery_zone }}</option></br>
+          </p>
+            Driver's Zone:<br>
+            <select class="w3-select w3-border" name="zone">
 
-          {% endfor %}
-      <p>
-      <input type="submit" name = "button" value="Add" /></br>
-    </form>
+              {% for zone in zones %}
 
+              <option value="{{ zone.delivery_zone }}">{{ zone.delivery_zone }}</option></br>
+
+              {% endfor %}
+          <p>
+          <input type="submit" name = "button" value="Add" /></br>
+        </form>
+    </div>
+
+    <div class="w3-half w3-container">
+
+      <table class="w3-table-all w3-hoverable">
+        <thead>
+          <tr class="w3-light-blue">
+            <th>DriverID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Delivery Zone</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+          </tr>
+        </thead>
+
+        {% for driver in drivers %}
+          <tr>
+            <td>{{ driver.id }}</td>
+            <td>{{ driver.first_name }}</td>
+            <td>{{ driver.last_name }}</td>
+            <td>{{ driver.delivery_zone }}</td>
+            <td>{{ driver.start_time }}</td>
+            <td>{{ driver.end_time }}</td>
+          </tr>
+        {% endfor %}
+
+      </table>
+
+      </div>
+    </div>
   </div>
 
 </body>

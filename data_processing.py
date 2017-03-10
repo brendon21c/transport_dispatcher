@@ -62,7 +62,8 @@ def current_driver_list():
 
     return query_all
 
-
+# Processes and assigns an order to the appropitate driver.
+# This does a alot and I tried to break it down for testing purposes as much as possible.
 def assign_route_to_driver(del_zip, current_time):
 
 
@@ -78,15 +79,19 @@ def assign_route_to_driver(del_zip, current_time):
 
     drivers_list = possible_drivers(driver_query, dest_zones) # get drivers
 
-    print(dest_zones)
-    print(drivers_list)
+    if not drivers_list:
+
+        drivers_list = find_backup_driver(driver_query, dest_zones)
+
+    # print(dest_zones)
+    # print(drivers_list)
 
     if drivers_list:
 
         if len(drivers_list) == 1: # only one driver.
 
             driver_id = drivers_list[0]
-            print(driver_id)
+            #print(driver_id)
             update_driver_workload(driver_id)
 
             return driver_id
@@ -94,6 +99,7 @@ def assign_route_to_driver(del_zip, current_time):
         else:
 
             driver_id = compare_driver_workload(drivers_list) # multiple drivers.
+            #print(driver_id)
             update_driver_workload(driver_id)
 
             return driver_id
@@ -124,6 +130,76 @@ def possible_drivers(drivers, zones):
                 possible_drivers.append(driver.id)
 
     return(possible_drivers)
+
+def find_backup_driver(drivers, zones):
+
+    now = datetime.now().time() # current time.
+    hour = now.hour # returns just the hour
+    today = datetime.now().date() # returns the date
+    print(hour)
+
+    final_driver_return = [] # return to assign_route_to_driver.
+
+    if hour >= 18:
+
+        driver_pool = []
+
+        for driver in drivers:
+
+            driver_id = driver.id
+
+            driver_pool.append(driver_id)
+
+        driver = compare_driver_workload(driver_pool) # find me the driver with the lowest amount of work.
+
+        final_driver_return.append(driver)
+
+        return final_driver_return
+
+    else:
+
+        zone = zones[0]
+
+        if zone == 2:
+
+            zone = 1
+
+            for driver in drivers:
+
+                if driver.delivery_zone == zone:
+
+                    final_driver_return.append(driver.id)
+
+                    return final_driver_return
+
+
+        elif zone == 1:
+
+            zone = 2
+
+            for driver in drivers:
+
+                if driver.delivery_zone == zone:
+
+                    final_driver_return.append(driver.id)
+
+                    return final_driver_return
+
+        else:
+
+            zone = 5
+
+            for driver in drivers:
+
+                if driver.delivery_zone == zone:
+
+                    final_driver_return.append(driver.id)
+
+                    return final_driver_return
+
+
+
+
 
 # gets a list of zones for the delivery.
 def possible_zones(dest):
@@ -175,7 +251,6 @@ def find_anchor_zone(dest):
     return zone_list
 
 
-# Work in progress, may be modified with query.
 def compare_driver_workload(drivers_list):
 
     today = datetime.now().date() # returns the date
@@ -186,7 +261,7 @@ def compare_driver_workload(drivers_list):
 
         stop_numbers = Workload.query.filter_by(date = today).filter_by(driverID = driver).first()
 
-        number = stop_numbers.del_num
+        number = stop_numbers.del_num # Gets the current number of stops for every driver working.
 
         #print(number)
 
@@ -198,7 +273,8 @@ def compare_driver_workload(drivers_list):
     driver_id = 0
 
     #TODO run a check if a driver has more than 16 stops, they would be exempt.
-    for stops in workload_number: # finds the driver with the least amount of stops.
+    # finds the driver with the least amount of stops.
+    for stops in workload_number:
 
         if stops <= low:
 
