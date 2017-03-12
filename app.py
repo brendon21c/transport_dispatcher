@@ -4,6 +4,7 @@ from sqlalchemy import func, exists, and_
 import itertools
 from datetime import *
 import logging as log
+from keys import keys
 
 
 app = Flask(__name__)
@@ -84,7 +85,7 @@ def new_order():
         if request.form['assign_method'] == 'auto':
 
 
-            timeTest = datetime.strptime("09:00", '%H:%M').time() # variable time for testing purposes.
+            #timeTest = datetime.strptime("09:00", '%H:%M').time() # variable time for testing purposes.
 
             current_time = datetime.now().time() # current time.
 
@@ -102,7 +103,10 @@ def new_order():
 
             return redirect(url_for('home_page'))
 
+
         else:
+
+            driver_id = request.form['driver_assign']
 
             orderPickup = Order_Table_Pickup(date,request.form['FromName'],request.form['FromAddress'],
             request.form['FromCity'], request.form['FromZip'],default_time, default_time, request.form['driver_assign'])
@@ -113,6 +117,9 @@ def new_order():
             db.session.add(orderPickup)
             db.session.add(orderDel)
             db.session.commit()
+
+            update_driver_workload(driver_id)
+
 
             return redirect(url_for('home_page'))
 
@@ -140,8 +147,68 @@ def manage_daily_orders():
 
     order_date = datetime.now().date() # returns the date
 
+    key = keys['GOOGLE_IFRAME_KEY']
 
-    return render_template('manage_daily_orders.html', driver_records = Drivers.query.all(), date = order_date, Pickup = Order_Table_Pickup.query.filter_by(date = order_date).all(), Delivery = Order_Table_Del.query.filter_by(date = order_date).all())
+    default_map = "44.9778, -93.2650"
+
+
+    if request.method == 'POST':
+
+        if request.form['button'] == 'Update Order':
+
+            new_driver = request.form['new_driver']
+
+            order_number = request.form['order_id_update']
+
+            query = Order_Table_Pickup.query.filter_by(id = order_number).first()
+
+            old_driver = query.driverID
+
+            update_orders_table(order_number,new_driver, old_driver)
+
+            return redirect(url_for('manage_daily_orders'))
+
+        if request.form['button'] == 'Directions':
+
+            order_number = request.form['Directions']
+
+            pickquery = Order_Table_Pickup.query.filter_by(id = order_number).first()
+
+            del_query = Order_Table_Del.query.filter_by(id = order_number).first()
+
+            starting_address = pickquery.address + " " + pickquery.city + " " + pickquery.zip_code
+
+            destination = del_query.address + " " + del_query.city + " " + del_query.zip_code
+
+            if " " in starting_address:
+
+                starting_address = starting_address.replace(" ", "+")
+                destination = destination.replace(" ", "+")
+
+            print(starting_address)
+            print(destination)
+
+            return render_template('manage_daily_orders.html', driver_records = Drivers.query.all(), date = order_date, Pickup = Order_Table_Pickup.query.filter_by(date = order_date).all(),
+             Delivery = Order_Table_Del.query.filter_by(date = order_date).all(), orders = Order_Table_Del.query.filter_by(date = order_date).all(), origin = starting_address, dest = destination, key = key)
+
+        else:
+
+            order_number = request.form['order_id_delete']
+
+            query = Order_Table_Pickup.query.filter_by(id = order_number).first()
+
+            driver = query.driverID
+
+            delete_order(order_number, driver)
+
+            return redirect(url_for('manage_daily_orders'))
+
+
+
+
+
+    return render_template('manage_daily_orders.html', driver_records = Drivers.query.all(), date = order_date, Pickup = Order_Table_Pickup.query.filter_by(date = order_date).all(),
+     Delivery = Order_Table_Del.query.filter_by(date = order_date).all(), orders = Order_Table_Del.query.filter_by(date = order_date).all(), center = default_map, key = key)
 
 
 

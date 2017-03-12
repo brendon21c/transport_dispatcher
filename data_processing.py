@@ -116,6 +116,46 @@ def update_driver_workload(driver):
 
     db.session.commit()
 
+# This will get called when the user updates or deletes orders.
+def update_driver_workload_subtraction(driver):
+
+    today = datetime.now().date() # returns the date
+
+    stop_numbers = Workload.query.filter_by(date = today).filter_by(driverID = driver).first()
+
+    stop_numbers.del_num = stop_numbers.del_num - 2
+
+    db.session.commit()
+
+# Will update both pickup and delivery tables.(for assining a new driver id.)
+def update_orders_table(order_id, new_driver, old_driver):
+
+
+    pickup_update = Order_Table_Pickup.query.filter_by(id = order_id).first()
+    pickup_update.driverID = new_driver
+
+    delivery_update = Order_Table_Del.query.filter_by(id = order_id).first()
+    delivery_update.driverID = new_driver
+
+    db.session.commit()
+
+    update_driver_workload(new_driver) # adds two to the new
+
+    update_driver_workload_subtraction(old_driver) # deletes two from the old.
+
+def delete_order(order_id, driver):
+
+    pickup_delete = Order_Table_Pickup.query.filter_by(id = order_id).delete()
+
+    delivery_delete = Order_Table_Del.query.filter_by(id = order_id).delete()
+
+    db.session.commit()
+
+    update_driver_workload_subtraction(driver)
+
+
+
+
 
 # gets a list of available drivers.
 def possible_drivers(drivers, zones):
@@ -131,12 +171,12 @@ def possible_drivers(drivers, zones):
 
     return(possible_drivers)
 
+# finds a driver if no driver in a zone.
 def find_backup_driver(drivers, zones):
 
     now = datetime.now().time() # current time.
     hour = now.hour # returns just the hour
     today = datetime.now().date() # returns the date
-    print(hour)
 
     final_driver_return = [] # return to assign_route_to_driver.
 
@@ -272,7 +312,6 @@ def compare_driver_workload(drivers_list):
     #print(low)
     driver_id = 0
 
-    #TODO run a check if a driver has more than 16 stops, they would be exempt.
     # finds the driver with the least amount of stops.
     for stops in workload_number:
 

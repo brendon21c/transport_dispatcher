@@ -6,6 +6,8 @@
 
   <meta charset="UTF-8">
   <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
 
 
 </head>
@@ -35,7 +37,7 @@
 
     </div>
 
-    <p> This page lets you reassign drivers and delete for the day. </p>
+    <p> This page lets you reassign drivers and delete orders for today. </p>
     <div>
 
       {% for driver in total_stops%}
@@ -84,6 +86,7 @@
     </div>
 
     <br>
+    <p> The full days orders, some listed drivers may not be currently working </p>
 
     <div class="w3-row">
 
@@ -145,6 +148,95 @@
 
       </div>
   </div>
+  <br>
+  <div class="w3-row">
+    <p> To assign a new driver select the order number and enter the new driver id.</p>
+
+    <div class="w3-container w3-third">
+      <form action="{{ request.path }}" method="post">
+
+        <select class="w3-select w3-border" name="order_id_update">
+
+          {% for order in orders %}
+
+          <option value="{{ order.id }}">{{ order.id }}</option></br>
+
+          {% endfor %}
+
+        </select>
+        <br>
+
+        <input class="w3-input w3-border" type="number" name="new_driver" placeholder="new driver" /></br>
+
+        <input type="submit" name = "button" value="Update Order" /></br>
+
+      </form>
+    </div>
+
+    <br>
+    <div class="w3-row">
+      <p> To delete and order select it's id number.</p>
+
+      <div class="w3-container w3-third">
+        <form action="{{ request.path }}" method="post">
+
+          <select class="w3-select w3-border" name="order_id_delete">
+
+            {% for order in orders %}
+
+            <option value="{{ order.id }}">{{ order.id }}</option></br>
+
+            {% endfor %}
+
+          </select>
+          <br>
+
+          <input type="submit" name = "button" value="Delete Order" /></br>
+
+        </form>
+      </div>
+  </div>
+  <br>
+
+  <div class="w3-row">
+
+    <p> To show directions for an order select it's order id and click the button.</p>
+
+    <div class="w3-container w3-third">
+    <form action="{{ request.path }}" method="post">
+
+      <select class="w3-select w3-border" name="Directions">
+
+        {% for order in orders %}
+
+        <option value="{{ order.id }}">{{ order.id }}</option></br>
+
+        {% endfor %}
+
+      </select>
+      <br>
+
+      <input type="submit" name = "button" value="Directions" /></br>
+
+    </form>
+    </div>
+
+    <div class="w3-container w3-half">
+
+      {% if center %}
+
+      <iframe src="https://www.google.com/maps/embed/v1/view?key={{ key }}&center={{ center }}&zoom=10" height="400" width="600"></iframe>
+
+      {% else %}
+
+    <!-- <a href="https://www.google.com/maps/dir/{{ origin }}/{{ dest }}">Directions Link</a> -->
+    <iframe src="https://www.google.com/maps/embed/v1/directions?origin={{ origin}}&destination={{ dest }}&key={{ key }}" height="400" width="600"></iframe>
+
+      {% endif %}
+    </div>
+
+  </div>
+
 
 </div>
 </body>

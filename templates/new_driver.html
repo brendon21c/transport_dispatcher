@@ -35,7 +35,7 @@
 
     <div class="w3-row">
 
-    <div class="w3-container w3-third" style="height:20%">
+    <div class="w3-container w3-third">
 
         <form action="{{ request.path }}" method="post">
           First name:<br>
@@ -71,6 +71,7 @@
               <option value="{{ zone.delivery_zone }}">{{ zone.delivery_zone }}</option></br>
 
               {% endfor %}
+            </select>
           <p>
           <input type="submit" name = "button" value="Add" /></br>
         </form>
