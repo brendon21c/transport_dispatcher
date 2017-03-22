@@ -15,6 +15,7 @@ db = SQLAlchemy(app)
 from data_processing import *
 from models import * # Needs to be after db, otherwise no tables are created.
 
+
 @app.route('/', methods = ['GET', 'POST'])
 def home_page():
     #
@@ -209,7 +210,6 @@ def manage_daily_orders():
 
     return render_template('manage_daily_orders.html', driver_records = Drivers.query.all(), date = order_date, Pickup = Order_Table_Pickup.query.filter_by(date = order_date).all(),
      Delivery = Order_Table_Del.query.filter_by(date = order_date).all(), orders = Order_Table_Del.query.filter_by(date = order_date).all(), center = default_map, key = key)
-
 
 
 # Had to add zones manually due to Zipcode API problems.
