@@ -1,25 +1,42 @@
-from flask import request
-from app import app
+from flask import request, Blueprint, jsonify
+
+account_api = Blueprint('account_api', __name__)
+
+from data_processing import *
+from datetime import *
+import logging
+from models import *
 
 
-@app.route('/api/routes/')
+@account_api.route('/api/routes/')
 def get_routes_for_driver():
 
-    driverid = request.args.get('driverid')
+    if request.args.get('driverid'):
 
-    driver_list = current_driver_list()
+        driverid = request.args.get('driverid')
 
-    name = ""
+        order_date = datetime.now().date() # returns the date
 
-    for driver in driver_list:
+        driver_list = current_driver_list()
 
-        name = driver.first_name
+        name = ""
 
-    return 'this is an api call for driver id ' + str(driverid)
+        test_query = Order_Table_Pickup.query.filter_by(date = order_date).all()
+
+        create_json(test_query)
+
+        for driver in driver_list:
+
+            name = driver.first_name
+
+        return 'this is an api call for driver id ' + str(driverid) + ' ' + name
+
+    else:
+
+        return 'no driver'
 
 
-@app.route('/api')
+@account_api.route('/api')
 def apicall():
 
-    print('got here')
     return 'this is an api call'

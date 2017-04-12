@@ -326,3 +326,29 @@ def compare_driver_workload(drivers_list):
     print(driver_id)
 
     return driver_id
+
+# Loop over query and send back a JSON to send to phone.
+def create_json(query):
+
+    data = {}
+
+    for item in query:
+
+        order_info = {}
+
+        order_info['customer'] = item.name
+        order_info['address'] = item.address
+        order_info['city'] = item.city
+        order_info['zip_code'] = item.zip_code
+
+        data[item.id] = order_info
+
+        # print(item.id)
+        # print(item.name)
+        # print(item.address)
+        # print(item.city)
+        # print(item.zip_code)
+
+    json_data = json.dumps(data) # TODO Not sure if this the best way to build JSON data.
+
+    print(json_data)

@@ -5,15 +5,18 @@ import itertools
 from datetime import *
 import logging as log
 from keys import keys
+from api import account_api
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///transport_db.sqlite3'
 app.config['SECRET_KEY'] = "transportation"
+app.register_blueprint(account_api)
 
 db = SQLAlchemy(app)
 from data_processing import *
 from models import * # Needs to be after db, otherwise no tables are created.
+
 
 
 @app.route('/', methods = ['GET', 'POST'])
