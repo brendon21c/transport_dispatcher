@@ -6,6 +6,7 @@ import logging as log
 import requests
 import json
 from keys import keys
+from flask import jsonify
 
 
 # takes a 12hr time and turns it into a 24 for data entry.
