@@ -9,6 +9,63 @@ from keys import keys
 from flask import jsonify
 
 
+def update_pickup_time(driver, order):
+
+
+    current_time = datetime.now().time()
+
+    try:
+
+        query_pick = Order_Table_Pickup.query.filter_by(id = order).filter_by(driverID = driver).first()
+        query_del = Order_Table_Del.query.filter_by(id = order).filter_by(driverID = driver).first()
+
+
+        query_pick.pick_time = current_time
+        query_del.pick_time = current_time
+
+        db.session.commit()
+
+        print('update made')
+
+        return None
+
+    except Exception as e:
+
+        print(e)
+        print('no update made')
+
+        return None
+
+def update_delivery_time(driver, order):
+
+
+    current_time = datetime.now().time()
+
+
+    try:
+
+        query_pick = Order_Table_Pickup.query.filter_by(id = order).filter_by(driverID = driver).first()
+        query_del = Order_Table_Del.query.filter_by(id = order).filter_by(driverID = driver).first()
+
+
+        query_pick.del_time = current_time
+        query_del.del_time = current_time
+
+        db.session.commit()
+
+        print('update made')
+
+        return None
+
+    except Exception as e:
+
+        print(e)
+        print('no update made')
+
+        return None
+
+
+
 # takes a 12hr time and turns it into a 24 for data entry.
 def process_time_entry(start, end):
 

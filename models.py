@@ -66,10 +66,11 @@ class Order_Table_Pickup(db.Model):
     zip_code = db.Column(db.String(50))
     pick_time = db.Column(db.Time)
     del_time = db.Column(db.Time)
+    action = db.Column(db.String(50))
     driverID = db.Column(db.Integer, ForeignKey('drivers_table.DriverID'))
 
 
-    def __init__(self, date, FromName, FromAddress, FromCity, FromZip, pickup, delivered, driverAssign):
+    def __init__(self, date, FromName, FromAddress, FromCity, FromZip, pickup, delivered, action, driverAssign):
 
         self.date = date
         self.name = FromName
@@ -78,6 +79,7 @@ class Order_Table_Pickup(db.Model):
         self.zip_code = FromZip
         self.pick_time = pickup
         self.del_time = delivered
+        self.action = action
         self.driverID = driverAssign
 
 # Table setup for order Deliveries
@@ -92,9 +94,10 @@ class Order_Table_Del(db.Model):
     zip_code = db.Column(db.String(50))
     pick_time = db.Column(db.Time)
     del_time = db.Column(db.Time)
+    action = db.Column(db.String(50))
     driverID = db.Column(db.Integer, ForeignKey('drivers_table.DriverID'))
 
-    def __init__(self, date, ToName, ToAddress, ToCity, ToZip, pickup, delivered, driverAssign):
+    def __init__(self, date, ToName, ToAddress, ToCity, ToZip, pickup, delivered,action, driverAssign):
 
         self.date = date
         self.name = ToName
@@ -103,6 +106,7 @@ class Order_Table_Del(db.Model):
         self.zip_code = ToZip
         self.pick_time = pickup
         self.del_time = delivered
+        self.action = action
         self.driverID = driverAssign
 
 class Workload(db.Model):
