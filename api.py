@@ -93,7 +93,7 @@ def get_routes_for_driver():
 
                 pickup_json = jsonify(Pickup_query)
                 del_json = jsonify(Delivery_query)
-                
+
                 combined_1= json.loads(pickup_json.data)
                 combined_2= json.loads(del_json.data)
 
@@ -101,8 +101,6 @@ def get_routes_for_driver():
 
                 combined_final = { 'Pickup' : combined_1, 'Delivery' : combined_2 }
                 #
-                json.dumps(combined_final)
-
 
                 # response = dict(itertools.chain(pickup_json,items(), del_json.items()))
                 # print(response)
