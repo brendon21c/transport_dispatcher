@@ -99,14 +99,16 @@ def new_order():
             driver_id = assign_route_to_driver(request.form['ToZip'], current_time)
 
             orderPickup = Order_Table_Pickup(date,request.form['FromName'],request.form['FromAddress'],
-            request.form['FromCity'], request.form['FromZip'],default_time, default_time, "pickup", driver_id)
+            request.form['FromCity'], request.form['FromZip'],default_time, default_time, "pickup",1, driver_id)
 
             orderDel = Order_Table_Del(date,request.form['ToName'],request.form['ToAddress'],
-            request.form['ToCity'],request.form['ToZip'],default_time, default_time, "delivery", driver_id)
+            request.form['ToCity'],request.form['ToZip'],default_time, default_time, "delivery",1, driver_id)
 
             db.session.add(orderPickup)
             db.session.add(orderDel)
             db.session.commit()
+
+            update_driver_workload(driver_id)
 
             return redirect(url_for('home_page'))
 
@@ -116,10 +118,10 @@ def new_order():
             driver_id = request.form['driver_assign']
 
             orderPickup = Order_Table_Pickup(date,request.form['FromName'],request.form['FromAddress'],
-            request.form['FromCity'], request.form['FromZip'],default_time, default_time,"pickup", request.form['driver_assign'])
+            request.form['FromCity'], request.form['FromZip'],default_time, default_time,"pickup",1, request.form['driver_assign'])
 
             orderDel = Order_Table_Del(date,request.form['ToName'],request.form['ToAddress'],
-            request.form['ToCity'],request.form['ToZip'],default_time, default_time,"delivery", request.form['driver_assign'])
+            request.form['ToCity'],request.form['ToZip'],default_time, default_time,"delivery",1, request.form['driver_assign'])
 
             db.session.add(orderPickup)
             db.session.add(orderDel)

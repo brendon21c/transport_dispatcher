@@ -8,7 +8,16 @@ import json
 from keys import keys
 from flask import jsonify
 
+# 
+# def combined_query_for_routes(driver, date):
+#
+#     combined_query = Drivers.query.join(Order_Table_Pickup).join(Order_Table_Del).filter_by(date = date).filter_by(driverID = driver).order_by(desc(Order_Table_Pickup.priority_number)).all()
+#
+#
+#     return combined_query
 
+
+# Updates the pickup and delivery tables, this is called when a driver "arrives" at a stop.
 def update_pickup_time(driver, order):
 
 
@@ -36,6 +45,7 @@ def update_pickup_time(driver, order):
 
         return None
 
+# Updates the pickup and delivery tables, this is called when a driver "arrives" at a stop.
 def update_delivery_time(driver, order):
 
 

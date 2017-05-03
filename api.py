@@ -1,4 +1,5 @@
 from flask import request, Blueprint, jsonify, current_app
+from sqlalchemy import desc
 
 account_api = Blueprint('account_api', __name__)
 
@@ -8,6 +9,7 @@ import logging
 from models import *
 import json
 import itertools
+
 
 
 
@@ -25,10 +27,25 @@ class PickupEncoder(json.JSONEncoder):
             'zip_code' : obj.zip_code,
             'pickup_time' : obj.pick_time.isoformat(),
             'delivery_time' : obj.del_time.isoformat(),
-            'action' : obj.action
+            'action' : obj.action,
+            'priority' : obj.priority_number
             }
 
         elif isinstance(obj, Order_Table_Del):
+
+            return { 'OrderNumber' : obj.id,
+            #'date' : obj.date,
+            'customer' : obj.name,
+            'address' : obj.address,
+            'city' : obj.city,
+            'zip_code' : obj.zip_code,
+            'pickup_time' : obj.pick_time.isoformat(),
+            'delivery_time' : obj.del_time.isoformat(),
+            'action' : obj.action,
+            'priority' : obj.priority_number
+            }
+
+        elif isinstance(obj, Drivers):
 
             return { 'OrderNumber' : obj.id,
             #'date' : obj.date,
@@ -68,17 +85,22 @@ def get_routes_for_driver():
 
             if name_id == int(driverid):
 
-                Pickup_query = Order_Table_Pickup.query.filter_by(date = order_date).filter_by(driverID = name_id).all()
-                Delivery_query = Order_Table_Del.query.filter_by(date = order_date).filter_by(driverID = name_id).all()
+                Pickup_query = Order_Table_Pickup.query.filter_by(date = order_date).filter_by(driverID = name_id).order_by(Order_Table_Pickup.priority_number).all()
+                Delivery_query = Order_Table_Del.query.filter_by(date = order_date).filter_by(driverID = name_id).order_by(Order_Table_Del.priority_number).all()
+
+                #combined_query = combined_query_for_routes(driverid, order_date)
+                # combined_json = jsonify(combined_query)
 
                 pickup_json = jsonify(Pickup_query)
                 del_json = jsonify(Delivery_query)
-
+                
                 combined_1= json.loads(pickup_json.data)
                 combined_2= json.loads(del_json.data)
 
-                combined_final = { 'Pickup' : combined_1, 'Delivery' : combined_2 }
+                # routes = {'Routes' : [combined_1,combined_2]}
 
+                combined_final = { 'Pickup' : combined_1, 'Delivery' : combined_2 }
+                #
                 json.dumps(combined_final)
 
 
