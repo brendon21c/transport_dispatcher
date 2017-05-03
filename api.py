@@ -45,18 +45,6 @@ class PickupEncoder(json.JSONEncoder):
             'priority' : obj.priority_number
             }
 
-        elif isinstance(obj, Drivers):
-
-            return { 'OrderNumber' : obj.id,
-            #'date' : obj.date,
-            'customer' : obj.name,
-            'address' : obj.address,
-            'city' : obj.city,
-            'zip_code' : obj.zip_code,
-            'pickup_time' : obj.pick_time.isoformat(),
-            'delivery_time' : obj.del_time.isoformat(),
-            'action' : obj.action
-            }
         else:
 
             return json.JSONEncoder.default(self, obj)
