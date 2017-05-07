@@ -62,7 +62,7 @@ def get_routes_for_driver():
 
         order_date = datetime.now().date() # returns the date
 
-        driver_list = current_driver_list()
+        driver_list = current_driver_list() #
 
         name = ""
 
@@ -76,30 +76,9 @@ def get_routes_for_driver():
                 Pickup_query = Order_Table_Pickup.query.filter_by(date = order_date).filter_by(driverID = name_id).order_by(Order_Table_Pickup.priority_number).all()
                 Delivery_query = Order_Table_Del.query.filter_by(date = order_date).filter_by(driverID = name_id).order_by(Order_Table_Del.priority_number).all()
 
-                #combined_query = combined_query_for_routes(driverid, order_date)
-                # combined_json = jsonify(combined_query)
-
-                pickup_json = jsonify(Pickup_query)
-                del_json = jsonify(Delivery_query)
-
-                combined_1= json.loads(pickup_json.data)
-                combined_2= json.loads(del_json.data)
-
-                # routes = {'Routes' : [combined_1,combined_2]}
-
-                combined_final = { 'Pickup' : combined_1, 'Delivery' : combined_2 }
-                #
-
-                # response = dict(itertools.chain(pickup_json,items(), del_json.items()))
-                # print(response)
-                # print(type(response))
-
+                combined_final = { 'Pickup' : Pickup_query, 'Delivery' : Delivery_query }
 
                 return jsonify(combined_final)
-
-                #return 'this is an api call for driver id ' + str(driverid) + ' ' + name
-
-
 
     else:
 
@@ -141,13 +120,13 @@ def pickup_stop():
         try:
 
             update_pickup_time(driverid, order_num)
+            return "Pickup Stop Completed."
 
         except Exception as e:
 
             return "problems"
 
 
-        return driverid + order_num
 
 # driver has arrived at Delivery. This will update the pickup time for both Pickup and Delivery tables.
 # Future Program will include a deadline.
@@ -163,17 +142,15 @@ def delivery_stop():
         try:
 
             update_delivery_time(driverid, order_num)
+            return "Delivery Stop Completed."
 
         except Exception as e:
 
             return "problems"
 
 
-        return driverid + order_num
-
-
-
+# Base route, does nothing
 @account_api.route('/api')
 def apicall():
 
-    return 'this is an api call'
+    return None

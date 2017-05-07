@@ -8,7 +8,7 @@ import json
 from keys import keys
 from flask import jsonify
 
-# 
+#
 # def combined_query_for_routes(driver, date):
 #
 #     combined_query = Drivers.query.join(Order_Table_Pickup).join(Order_Table_Del).filter_by(date = date).filter_by(driverID = driver).order_by(desc(Order_Table_Pickup.priority_number)).all()
@@ -28,13 +28,14 @@ def update_pickup_time(driver, order):
         query_pick = Order_Table_Pickup.query.filter_by(id = order).filter_by(driverID = driver).first()
         query_del = Order_Table_Del.query.filter_by(id = order).filter_by(driverID = driver).first()
 
-
+        # Update pickup times for both picup and delivery orders.
         query_pick.pick_time = current_time
         query_del.pick_time = current_time
 
-        db.session.commit()
+        # Update the action column so Android app can change color on listview to show completetion.
+        query_pick.action = "complete"
 
-        print('update made')
+        db.session.commit()
 
         return None
 
@@ -57,13 +58,14 @@ def update_delivery_time(driver, order):
         query_pick = Order_Table_Pickup.query.filter_by(id = order).filter_by(driverID = driver).first()
         query_del = Order_Table_Del.query.filter_by(id = order).filter_by(driverID = driver).first()
 
-
+        # Update pickup times for both picup and delivery orders.
         query_pick.del_time = current_time
         query_del.del_time = current_time
 
-        db.session.commit()
+        # Update the action column so Android app can change color on listview to show completetion.
+        query_del.action = "complete"
 
-        print('update made')
+        db.session.commit()
 
         return None
 
