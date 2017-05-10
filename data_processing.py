@@ -8,13 +8,19 @@ import json
 from keys import keys
 from flask import jsonify
 
-#
-# def combined_query_for_routes(driver, date):
-#
-#     combined_query = Drivers.query.join(Order_Table_Pickup).join(Order_Table_Del).filter_by(date = date).filter_by(driverID = driver).order_by(desc(Order_Table_Pickup.priority_number)).all()
-#
-#
-#     return combined_query
+
+# Checks to see if the driver exists in system. This is used by the Android app.
+def driver_in_system(driverID):
+
+    drivers_list = Drivers.query.all()
+
+    for driver in drivers_list:
+
+        if driver.id == int(driverID):
+
+            return True
+
+    return False
 
 
 # Updates the pickup and delivery tables, this is called when a driver "arrives" at a stop.

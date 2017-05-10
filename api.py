@@ -1,6 +1,7 @@
 from flask import request, Blueprint, jsonify, current_app
 from sqlalchemy import desc
 
+
 account_api = Blueprint('account_api', __name__)
 
 from data_processing import *
@@ -12,7 +13,7 @@ import itertools
 
 
 
-
+# Encodes both the Order Table and Pickup table into JSON for return to Andriod app.
 class PickupEncoder(json.JSONEncoder):
     """take a database query and returns a json"""
     def default(self,obj):
@@ -62,13 +63,12 @@ def get_routes_for_driver():
 
         order_date = datetime.now().date() # returns the date
 
-        driver_list = current_driver_list() #
+        driver_list = current_driver_list()
 
         name = ""
 
         for driver in driver_list:
 
-            # name = driver.first_name
             name_id = driver.id
 
             if name_id == int(driverid):
@@ -80,9 +80,10 @@ def get_routes_for_driver():
 
                 return jsonify(combined_final)
 
-    else:
+        else:
 
-        return 'no routes'
+            return 'no routes'
+
 
 # checks to see if driver exists and sends back the Driver ID is they do.
 @account_api.route('/api/driver_login/')
@@ -92,19 +93,20 @@ def get_driver():
 
         driverid = request.args.get('driverid')
 
-        order_date = datetime.now().date() # returns the date
+        driver_list = driver_in_system(driverid)
 
-        driver_list = current_driver_list()
+        print(driver_list)
 
-        for driver in driver_list:
+        # API is returning Strings because that's whats expected on the Android side.
+        if driver_list:
 
-            driver_id = driver.id
+            return "True"
 
-            if driver.id == int(driverid):
+        else:
 
-                return "driving"
+            return "False"
 
-        return "not driving"
+
 
 # driver has arrived at pickup. This will update the pickup time for both Pickup and Delivery tables.
 # Future Program will include a deadline.
