@@ -63,7 +63,8 @@ def get_routes_for_driver():
 
         order_date = datetime.now().date() # returns the date
 
-        driver_list = current_driver_list()
+        # driver_list = current_driver_list()
+        driver_list = Drivers.query.all()
 
         name = ""
 
